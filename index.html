@@ -4,248 +4,376 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>אדיר מגידיש</title>
-  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: #fff9f0;
-      color: #2e2e2e;
+      background: #0f0f0f;
+      color: #fff;
       font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
     /* ── TOPBAR ── */
     .topbar {
-      background: #ff6c4f;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 24px;
-      height: 64px;
+      padding: 20px 32px;
+      background: linear-gradient(to bottom, rgba(15,15,15,0.95), transparent);
     }
     .topbar-name {
-      font-size: 18px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
       color: #fff;
     }
-    .topbar-icon {
-      width: 40px; height: 40px;
+    .topbar-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 2px;
+    }
+    .btn-contact {
+      background: #fff;
+      color: #0f0f0f;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 18px;
       border-radius: 20px;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-contact:hover { opacity: 0.8; }
+
+    /* ── CAROUSEL ── */
+    .carousel-wrap {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      perspective: 1200px;
     }
 
-    /* ── HERO ── */
-    .hero {
-      background: #fff9f0;
-      padding: 28px 24px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-    }
-    .hero-card {
-      width: 100%;
-      height: 480px;
-      border-radius: 32px;
-      border: 3px solid #724ce4;
-      overflow: hidden;
+    .carousel-track {
       position: relative;
+      width: 340px;
+      height: 480px;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .hero-card img {
+
+    .card {
+      position: absolute;
+      width: 340px;
+      height: 480px;
+      border-radius: 28px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.7s ease,
+                  opacity 0.7s ease;
+      user-select: none;
+    }
+
+    .card img {
       width: 100%; height: 100%;
       object-fit: cover;
       display: block;
-    }
-    .hero-card-gradient {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
-      border-radius: 32px;
-    }
-    .hero-overlay {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .hero-name {
-      font-size: clamp(40px, 10vw, 72px);
-      font-weight: 800;
-      color: #fff;
-      line-height: 0.9;
-      letter-spacing: -0.02em;
-      text-align: right;
-    }
-    .hero-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.8);
-      text-align: right;
+      pointer-events: none;
     }
 
-    /* ── ACTION BUTTONS ── */
-    .actions-row {
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 50%);
+      border-radius: 28px;
+    }
+
+    .card-caption {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      left: 24px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.4s ease 0.2s, transform 0.4s ease 0.2s;
+    }
+
+    .card-caption-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .card-caption-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 4px;
+    }
+
+    /* Card states */
+    .card[data-pos="0"] {
+      transform: translateX(0) scale(1) rotateY(0deg);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      z-index: 10;
+      opacity: 1;
+    }
+    .card[data-pos="0"] .card-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card[data-pos="1"] {
+      transform: translateX(220px) scale(0.82) rotateY(-18deg);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      z-index: 5;
+      opacity: 0.65;
+    }
+    .card[data-pos="-1"] {
+      transform: translateX(-220px) scale(0.82) rotateY(18deg);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      z-index: 5;
+      opacity: 0.65;
+    }
+    .card[data-pos="2"] {
+      transform: translateX(370px) scale(0.66) rotateY(-28deg);
+      z-index: 2;
+      opacity: 0.3;
+    }
+    .card[data-pos="-2"] {
+      transform: translateX(-370px) scale(0.66) rotateY(28deg);
+      z-index: 2;
+      opacity: 0.3;
+    }
+    .card[data-pos="3"],
+    .card[data-pos="-3"] {
+      transform: translateX(0) scale(0.5);
+      z-index: 1;
+      opacity: 0;
+    }
+
+    /* ── ARROWS ── */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      color: #fff;
+      transition: background 0.2s;
+      z-index: 20;
+      user-select: none;
+    }
+    .arrow:hover { background: rgba(255,255,255,0.2); }
+    .arrow-prev { left: calc(50% - 280px); }
+    .arrow-next { right: calc(50% - 280px); }
+
+    /* ── DOTS ── */
+    .dots {
+      position: absolute;
+      bottom: 40px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.active {
+      background: #fff;
+      transform: scale(1.4);
+    }
+
+    /* ── BIO STRIP ── */
+    .bio-strip {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 32px;
+      background: linear-gradient(to top, rgba(15,15,15,0.95), transparent);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-    }
-    .btn-action {
-      display: flex; align-items: center; justify-content: center;
-      border: none; cursor: pointer;
-      font-size: 24px;
-      box-shadow: 0 8px 10px rgba(0,0,0,0.1);
-    }
-    .btn-skip {
-      width: 64px; height: 64px;
-      border-radius: 32px;
-      background: #ffd92b;
-      border: 1px solid #fff;
-    }
-    .btn-like {
-      width: 88px; height: 88px;
-      border-radius: 44px;
-      background: #ff6c4f;
-      font-size: 32px;
-      box-shadow: 0 10px 12px rgba(0,0,0,0.12);
-    }
-    .btn-star {
-      width: 64px; height: 64px;
-      border-radius: 32px;
-      background: #2cd69a;
-      border: 1px solid #fff;
-    }
-
-    /* ── STORIES ── */
-    .story-strip {
-      background: #fff;
-      padding: 0 24px 28px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-    .section-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding-top: 16px;
-    }
-    .label-purple { color: #724ce4; }
-    .story-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
-    }
-    .story-circle {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      border: 3px solid;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-    .story-circle img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
-    .story-1 { border-color: #ff6c4f; }
-    .story-2 { border-color: #ffd92b; }
-    .story-3 { border-color: #724ce4; }
-    .story-4 { border-color: #2cd69a; }
-    .story-5 { border-color: #ff63a5; }
-
-    /* ── BIO ── */
-    .bio {
-      background: #fff9f0;
-      padding: 0 24px 56px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      text-align: center;
     }
     .bio-text {
-      font-size: 16px;
-      line-height: 1.6;
-      color: #2e2e2e;
-      max-width: 600px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      line-height: 1.5;
     }
-
-    /* ── FOOTER ── */
-    .footer {
-      background: #ff6c4f;
-      padding: 20px 24px;
+    .bio-stats {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      gap: 24px;
     }
-    .footer p {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
+    .stat { text-align: center; }
+    .stat-num { font-size: 16px; font-weight: 700; }
+    .stat-lbl { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+    /* ── ENTER ANIMATION ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
+    .topbar  { animation: fadeUp 0.6s ease both; }
+    .bio-strip { animation: fadeUp 0.6s ease 0.2s both; }
+    .carousel-wrap { animation: fadeUp 0.8s ease 0.1s both; }
   </style>
 </head>
 <body>
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-name">אדיר מגידיש</div>
-    <div class="topbar-icon">🤍</div>
+    <div>
+      <div class="topbar-name">אדיר מגידיש</div>
+      <div class="topbar-sub">Senior Product Designer · Bazaart</div>
+    </div>
+    <a href="mailto:adir@example.com" class="btn-contact">צור קשר</a>
   </div>
 
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-card">
-      <img src="images/img4.jpg" alt="אדיר מגידיש"/>
-      <div class="hero-card-gradient"></div>
-      <div class="hero-overlay">
-        <div class="hero-name">אדיר מגידיש</div>
-        <div class="hero-title">Senior Product Designer · Bazaart</div>
+  <!-- CAROUSEL -->
+  <div class="carousel-wrap">
+    <div class="arrow arrow-prev" id="prev">‹</div>
+
+    <div class="carousel-track" id="track">
+      <div class="card" data-pos="0" data-idx="0">
+        <img src="images/img4.jpg" alt="אבא ובת"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">אבא ובת 🌅</div>
+          <div class="card-caption-sub">רגע משפחתי</div>
+        </div>
+      </div>
+      <div class="card" data-pos="1" data-idx="1">
+        <img src="images/img0.jpg" alt="יום הולדת"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">יום הולדת 🎂</div>
+          <div class="card-caption-sub">חגיגה</div>
+        </div>
+      </div>
+      <div class="card" data-pos="2" data-idx="2">
+        <img src="images/img1.jpg" alt="הבנים"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">הבנים 👦👦</div>
+          <div class="card-caption-sub">ביחד</div>
+        </div>
+      </div>
+      <div class="card" data-pos="-1" data-idx="3">
+        <img src="images/img2.jpg" alt="בנמל"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">בנמל ☕</div>
+          <div class="card-caption-sub">תל אביב</div>
+        </div>
+      </div>
+      <div class="card" data-pos="-2" data-idx="4">
+        <img src="images/img3.jpg" alt="אמא ובת"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">אמא ובת 🌅</div>
+          <div class="card-caption-sub">שקיעה</div>
+        </div>
+      </div>
+      <div class="card" data-pos="3" data-idx="5">
+        <img src="images/img5.jpg" alt="הנסיכה"/>
+        <div class="card-overlay"></div>
+        <div class="card-caption">
+          <div class="card-caption-title">הנסיכה 😎</div>
+          <div class="card-caption-sub">כוכבת</div>
+        </div>
       </div>
     </div>
 
-    <div class="actions-row">
-      <button class="btn-action btn-skip">✕</button>
-      <button class="btn-action btn-like">🤍</button>
-      <button class="btn-action btn-star">⭐</button>
-    </div>
+    <div class="arrow arrow-next" id="next">›</div>
+
+    <div class="dots" id="dots"></div>
   </div>
 
-  <!-- STORIES -->
-  <div class="story-strip">
-    <div class="section-label label-purple">STORIES</div>
-    <div class="story-row">
-      <div class="story-circle story-1"><img src="images/img0.jpg" alt=""/></div>
-      <div class="story-circle story-2"><img src="images/img1.jpg" alt=""/></div>
-      <div class="story-circle story-3"><img src="images/img2.jpg" alt=""/></div>
-      <div class="story-circle story-4"><img src="images/img3.jpg" alt=""/></div>
-      <div class="story-circle story-5"><img src="images/img5.jpg" alt=""/></div>
-    </div>
-  </div>
-
-  <!-- BIO -->
-  <div class="bio">
-    <div class="section-label label-purple">ABOUT</div>
-    <p class="bio-text">
-      מעצב מוצר בכיר עם 10+ שנות ניסיון. AI tools, web editors, e-commerce.<br>
+  <!-- BIO STRIP -->
+  <div class="bio-strip">
+    <div class="bio-text">
+      מעצב מוצר בכיר · AI tools · Web editors<br>
       לשעבר Vimeo ו-Magisto 🎨
-    </p>
+    </div>
+    <div class="bio-stats">
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-lbl">שנות ניסיון</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-lbl">חברות</div></div>
+      <div class="stat"><div class="stat-num">TLV</div><div class="stat-lbl">מיקום</div></div>
+    </div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <p>© 2026 אדיר מגידיש</p>
-  </div>
+  <script>
+    const cards = Array.from(document.querySelectorAll('.card'));
+    const dotsEl = document.getElementById('dots');
+    const N = cards.length;
+    let current = 0;
 
+    // Build dots
+    cards.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+
+    function posOf(idx) {
+      let diff = idx - current;
+      if (diff > N / 2) diff -= N;
+      if (diff < -N / 2) diff += N;
+      return diff;
+    }
+
+    function render() {
+      cards.forEach((card, i) => {
+        const pos = posOf(i);
+        card.setAttribute('data-pos', Math.max(-3, Math.min(3, pos)));
+      });
+      document.querySelectorAll('.dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+    }
+
+    function goTo(idx) {
+      current = (idx + N) % N;
+      render();
+    }
+
+    document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+    document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+
+    // Click side cards to navigate
+    cards.forEach((card, i) => {
+      card.addEventListener('click', () => {
+        const pos = posOf(i);
+        if (pos === 1) goTo(current + 1);
+        else if (pos === -1) goTo(current - 1);
+      });
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  goTo(current - 1);
+      if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+
+    // Auto-play
+    setInterval(() => goTo(current + 1), 4000);
+  </script>
 </body>
 </html>
