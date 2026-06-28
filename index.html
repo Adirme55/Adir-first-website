@@ -4,170 +4,248 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>אדיר מגידיש</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: #1a0000;
-      color: #f0f0f0;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #fff9f0;
+      color: #2e2e2e;
+      font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
+
+    /* ── TOPBAR ── */
     .topbar {
+      background: #ff6c4f;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 24px;
-      border-bottom: 1px solid #3a0000;
-      background: #110000;
+      padding: 14px 24px;
+      height: 64px;
     }
-    .topbar-name { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; color: #fff; }
-    .topbar-sub { font-size: 12px; color: #a06060; margin-top: 2px; }
-    .topbar-right { display: flex; gap: 20px; align-items: center; }
-    .topbar-right a { font-size: 13px; color: #a06060; text-decoration: none; }
-    .topbar-right a:hover { color: #f0f0f0; }
-    .btn-contact {
-      background: #c0392b;
+    .topbar-name {
+      font-size: 18px;
+      font-weight: 800;
       color: #fff;
+    }
+    .topbar-icon {
+      width: 40px; height: 40px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: #fff9f0;
+      padding: 28px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    .hero-card {
+      width: 100%;
+      height: 480px;
+      border-radius: 32px;
+      border: 3px solid #724ce4;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-card-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+      border-radius: 32px;
+    }
+    .hero-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .hero-name {
+      font-size: clamp(40px, 10vw, 72px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      text-align: right;
+    }
+    .hero-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.8);
+      text-align: right;
+    }
+
+    /* ── ACTION BUTTONS ── */
+    .actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    .btn-action {
+      display: flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
+      font-size: 24px;
+      box-shadow: 0 8px 10px rgba(0,0,0,0.1);
+    }
+    .btn-skip {
+      width: 64px; height: 64px;
+      border-radius: 32px;
+      background: #ffd92b;
+      border: 1px solid #fff;
+    }
+    .btn-like {
+      width: 88px; height: 88px;
+      border-radius: 44px;
+      background: #ff6c4f;
+      font-size: 32px;
+      box-shadow: 0 10px 12px rgba(0,0,0,0.12);
+    }
+    .btn-star {
+      width: 64px; height: 64px;
+      border-radius: 32px;
+      background: #2cd69a;
+      border: 1px solid #fff;
+    }
+
+    /* ── STORIES ── */
+    .story-strip {
+      background: #fff;
+      padding: 0 24px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding-top: 16px;
+    }
+    .label-purple { color: #724ce4; }
+    .story-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+    .story-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .story-circle img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .story-1 { border-color: #ff6c4f; }
+    .story-2 { border-color: #ffd92b; }
+    .story-3 { border-color: #724ce4; }
+    .story-4 { border-color: #2cd69a; }
+    .story-5 { border-color: #ff63a5; }
+
+    /* ── BIO ── */
+    .bio {
+      background: #fff9f0;
+      padding: 0 24px 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+    .bio-text {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #2e2e2e;
+      max-width: 600px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: #ff6c4f;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .footer p {
       font-size: 13px;
       font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 20px;
-      text-decoration: none;
-      transition: background 0.2s;
+      color: #fff;
     }
-    .btn-contact:hover { background: #e74c3c; color: #fff; }
-    .profile { padding: 32px 24px 24px; max-width: 600px; margin: 0 auto; }
-    .profile-row { display: flex; align-items: center; gap: 28px; margin-bottom: 20px; }
-    .avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid #3a0000; flex-shrink: 0; }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .profile-stats { display: flex; gap: 28px; flex: 1; justify-content: space-around; }
-    .stat { text-align: center; }
-    .stat-num { font-size: 17px; font-weight: 600; display: block; }
-    .stat-lbl { font-size: 12px; color: #a06060; margin-top: 2px; }
-    .profile-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-    .profile-title { font-size: 13px; color: #a06060; margin-bottom: 4px; }
-    .profile-bio { font-size: 13px; color: #ccc; line-height: 1.5; }
-    .carousel-section { max-width: 600px; margin: 24px auto 0; padding: 0 24px; }
-    .carousel-label { font-size: 12px; color: #a06060; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
-    .carousel { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 16px; overflow: hidden; background: #2a0000; }
-    .slide { position: absolute; inset: 0; opacity: 0; transition: opacity 0.6s ease; }
-    .slide.active { opacity: 1; }
-    .slide img { width: 100%; height: 100%; object-fit: cover; }
-    .slide-caption { position: absolute; bottom: 14px; right: 16px; font-size: 13px; color: rgba(255,255,255,0.85); background: rgba(0,0,0,0.45); padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(6px); }
-    .progress-track { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.1); }
-    .progress-fill { height: 100%; width: 0%; background: #c0392b; transition: width linear; }
-    .dots { display: flex; justify-content: center; gap: 5px; margin-top: 10px; }
-    .dot { width: 5px; height: 5px; border-radius: 50%; border: none; background: #3a0000; cursor: pointer; padding: 0; transition: background 0.2s, transform 0.2s; }
-    .dot.active { background: #c0392b; transform: scale(1.4); }
-    .highlights { max-width: 600px; margin: 28px auto 0; padding: 0 24px; display: flex; gap: 16px; overflow-x: auto; scrollbar-width: none; }
-    .highlights::-webkit-scrollbar { display: none; }
-    .highlight { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-    .highlight-ring { width: 58px; height: 58px; border-radius: 50%; border: 2px solid #3a0000; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-    .highlight-name { font-size: 11px; color: #a06060; }
-    .grid-label { max-width: 600px; margin: 28px auto 12px; padding: 20px 24px 0; font-size: 12px; color: #a06060; letter-spacing: 0.1em; text-transform: uppercase; border-top: 1px solid #2a0000; }
-    .grid { max-width: 600px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
-    .grid-item { aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; background: #2a0000; }
-    .grid-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.2s; }
-    .grid-item img:hover { opacity: 0.85; }
-    .footer { max-width: 600px; margin: 40px auto 0; padding: 20px 24px 40px; border-top: 1px solid #2a0000; display: flex; justify-content: space-between; align-items: center; }
-    .footer p { font-size: 11px; color: #a06060; }
-    .footer-links { display: flex; gap: 16px; }
-    .footer-links a { font-size: 11px; color: #a06060; text-decoration: none; }
-    .footer-links a:hover { color: #f0f0f0; }
   </style>
 </head>
 <body>
+
+  <!-- TOPBAR -->
   <div class="topbar">
-    <div>
-      <div class="topbar-name">אדיר מגידיש</div>
-      <div class="topbar-sub">Senior Product Designer</div>
-    </div>
-    <div class="topbar-right">
-      <a href="#">Bazaart</a>
-      <a href="mailto:adir@example.com" class="btn-contact">צור קשר</a>
-    </div>
+    <div class="topbar-name">אדיר מגידיש</div>
+    <div class="topbar-icon">🤍</div>
   </div>
-  <div class="profile">
-    <div class="profile-row">
-      <div class="avatar">
-        <img src="https://adirme55.github.io/Adir-first-website/images/img4.jpg" alt="אדיר" />
-      </div>
-      <div class="profile-stats">
-        <div class="stat"><span class="stat-num">10+</span><span class="stat-lbl">שנות ניסיון</span></div>
-        <div class="stat"><span class="stat-num">3</span><span class="stat-lbl">חברות</span></div>
-        <div class="stat"><span class="stat-num">TLV</span><span class="stat-lbl">מיקום</span></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-card">
+      <img src="images/img4.jpg" alt="אדיר מגידיש"/>
+      <div class="hero-card-gradient"></div>
+      <div class="hero-overlay">
+        <div class="hero-name">אדיר מגידיש</div>
+        <div class="hero-title">Senior Product Designer · Bazaart</div>
       </div>
     </div>
-    <div class="profile-name">אדיר מגידיש</div>
-    <div class="profile-title">Senior Product Designer · Bazaart</div>
-    <div class="profile-bio">מעצב מוצר בכיר עם 10+ שנות ניסיון. AI tools, web editors, e-commerce.<br>לשעבר Vimeo ו-Magisto 🎨</div>
-  </div>
-  <div class="highlights">
-    <div class="highlight"><div class="highlight-ring">🎨</div><span class="highlight-name">עיצוב</span></div>
-    <div class="highlight"><div class="highlight-ring">🤖</div><span class="highlight-name">AI</span></div>
-    <div class="highlight"><div class="highlight-ring">👨‍👧</div><span class="highlight-name">משפחה</span></div>
-    <div class="highlight"><div class="highlight-ring">📊</div><span class="highlight-name">Data</span></div>
-    <div class="highlight"><div class="highlight-ring">🌊</div><span class="highlight-name">TLV</span></div>
-  </div>
-  <div class="carousel-section">
-    <div class="carousel-label">רגעים</div>
-    <div class="carousel" id="carousel">
-      <div class="slide active"><img src="https://adirme55.github.io/Adir-first-website/images/img0.jpg" alt="יום הולדת"/><div class="slide-caption">יום הולדת 🎂</div></div>
-      <div class="slide"><img src="https://adirme55.github.io/Adir-first-website/images/img1.jpg" alt="הבנים"/><div class="slide-caption">הבנים 👦👦</div></div>
-      <div class="slide"><img src="https://adirme55.github.io/Adir-first-website/images/img2.jpg" alt="בנמל"/><div class="slide-caption">בנמל ☕</div></div>
-      <div class="slide"><img src="https://adirme55.github.io/Adir-first-website/images/img3.jpg" alt="אמא ובת"/><div class="slide-caption">אמא ובת 🌅</div></div>
-      <div class="slide"><img src="https://adirme55.github.io/Adir-first-website/images/img4.jpg" alt="אבא ובת"/><div class="slide-caption">אבא ובת 🌅</div></div>
-      <div class="slide"><img src="https://adirme55.github.io/Adir-first-website/images/img5.jpg" alt="הנסיכה"/><div class="slide-caption">הנסיכה 😎</div></div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    </div>
-    <div class="dots" id="dots">
-      <button class="dot active" data-i="0"></button>
-      <button class="dot" data-i="1"></button>
-      <button class="dot" data-i="2"></button>
-      <button class="dot" data-i="3"></button>
-      <button class="dot" data-i="4"></button>
-      <button class="dot" data-i="5"></button>
+
+    <div class="actions-row">
+      <button class="btn-action btn-skip">✕</button>
+      <button class="btn-action btn-like">🤍</button>
+      <button class="btn-action btn-star">⭐</button>
     </div>
   </div>
-  <div class="grid-label">גלריה</div>
-  <div class="grid">
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img0.jpg"/></div>
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img1.jpg"/></div>
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img2.jpg"/></div>
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img3.jpg"/></div>
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img4.jpg"/></div>
-    <div class="grid-item"><img src="https://adirme55.github.io/Adir-first-website/images/img5.jpg"/></div>
+
+  <!-- STORIES -->
+  <div class="story-strip">
+    <div class="section-label label-purple">STORIES</div>
+    <div class="story-row">
+      <div class="story-circle story-1"><img src="images/img0.jpg" alt=""/></div>
+      <div class="story-circle story-2"><img src="images/img1.jpg" alt=""/></div>
+      <div class="story-circle story-3"><img src="images/img2.jpg" alt=""/></div>
+      <div class="story-circle story-4"><img src="images/img3.jpg" alt=""/></div>
+      <div class="story-circle story-5"><img src="images/img5.jpg" alt=""/></div>
+    </div>
   </div>
+
+  <!-- BIO -->
+  <div class="bio">
+    <div class="section-label label-purple">ABOUT</div>
+    <p class="bio-text">
+      מעצב מוצר בכיר עם 10+ שנות ניסיון. AI tools, web editors, e-commerce.<br>
+      לשעבר Vimeo ו-Magisto 🎨
+    </p>
+  </div>
+
+  <!-- FOOTER -->
   <div class="footer">
     <p>© 2026 אדיר מגידיש</p>
-    <div class="footer-links"><a href="#">Bazaart</a><a href="#">LinkedIn</a><a href="mailto:adir@example.com">צור קשר</a></div>
   </div>
-  <script>
-    const INTERVAL = 3500;
-    let current = 0;
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
-    const fill = document.getElementById('progressFill');
-    function goTo(n) {
-      slides[current].classList.remove('active');
-      dots[current].classList.remove('active');
-      current = (n + slides.length) % slides.length;
-      slides[current].classList.add('active');
-      dots[current].classList.add('active');
-      resetProgress();
-    }
-    function resetProgress() {
-      fill.style.transition = 'none';
-      fill.style.width = '0%';
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        fill.style.transition = 'width ' + INTERVAL + 'ms linear';
-        fill.style.width = '100%';
-      }));
-    }
-    dots.forEach(d => d.addEventListener('click', () => goTo(+d.dataset.i)));
-    setInterval(() => goTo(current + 1), INTERVAL);
-    resetProgress();
-  </script>
+
 </body>
 </html>
